@@ -94,14 +94,30 @@ namespace PluginsDataverse.UITests
                 $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&pagetype=entitylist&etn={TestConfig.EntityName}",
                 new PageGotoOptions { Timeout = 60000 });
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
+            await Page.WaitForTimeoutAsync(5000); // Esperar inicialización completa de la app
 
-            // El botón tiene role="menuitem" y data-id con "NewRecord"
-            var newBtn = Page.Locator("button[data-id*='NewRecord']").First;
-            await newBtn.WaitForAsync(new() { State = WaitForSelectorState.Attached, Timeout = 15000 });
-            await newBtn.ClickAsync(new() { Force = true });
+            // Hacer click via JS directamente (más fiable que Playwright click en Power Apps)
+            var clicked = await Page.EvaluateAsync<bool>(@"
+                const btn = document.querySelector(""button[data-id*='NewRecord']"");
+                if (btn) { btn.click(); return true; }
+                return false;
+            ");
 
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
-            await Page.WaitForTimeoutAsync(3000);
+            if (!clicked)
+            {
+                // Fallback: usar API de Power Apps
+                await Page.EvaluateAsync(@"
+                    Xrm.Navigation.navigateTo({
+                        pageType: 'entityrecord',
+                        entityName: 'erf_tablasparaexportar'
+                    });
+                ");
+            }
+
+            // Esperar a que el formulario cargue verificando que aparece el campo
+            await Page.WaitForSelectorAsync(
+                "input[data-id='erf_name.fieldControl-text-box-text']",
+                new() { Timeout = 30000 });
         }
 
         private async Task FillFieldAsync(string fieldName, string value)
