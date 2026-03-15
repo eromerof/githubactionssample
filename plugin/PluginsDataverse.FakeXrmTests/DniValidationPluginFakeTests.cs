@@ -1,6 +1,6 @@
-using FakeXrmEasy;
 using FakeXrmEasy.Abstractions;
 using FakeXrmEasy.Abstractions.Enums;
+using FakeXrmEasy.Middleware;
 using FakeXrmEasy.Plugins;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Xrm.Sdk;
@@ -17,13 +17,15 @@ namespace PluginsDataverse.FakeXrmTests
     [TestClass]
     public class DniValidationPluginFakeTests
     {
-        private XrmFakedContext _context = null!;
+        private IXrmFakedContext _context = null!;
 
         [TestInitialize]
         public void Init()
         {
-            _context = new XrmFakedContext();
-            _context.SetLicense(FakeXrmEasyLicense.RPL_1_5);
+            _context = MiddlewareBuilder
+                .New()
+                .SetLicense(FakeXrmEasyLicense.RPL_1_5)
+                .Build();
         }
 
         private XrmFakedPluginExecutionContext CreatePluginContext(Entity target, string messageName = "Create", int stage = 10, string entityName = "erf_tablasparaexportar")
