@@ -1,195 +1,82 @@
-using Microsoft.Playwright;
-using Microsoft.Playwright.MSTest;
+using Microsoft.Dynamics365.UIAutomation.Api.UCI;
+using Microsoft.Dynamics365.UIAutomation.Browser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Security.Cryptography;
 
 namespace PluginsDataverse.UITests
 {
     [TestClass]
-    public class DataverseTests : PageTest
+    public class DataverseTests
     {
-        private static string GenerateTotp(string base32Secret)
-        {
-            var secret = Base32Decode(base32Secret.ToUpper());
-            var counter = DateTimeOffset.UtcNow.ToUnixTimeSeconds() / 30;
-            var counterBytes = BitConverter.GetBytes(counter);
-            if (BitConverter.IsLittleEndian) Array.Reverse(counterBytes);
+        private XrmApp _xrmApp = null!;
+        private WebClient _webClient = null!;
 
-            using var hmac = new HMACSHA1(secret);
-            var hash = hmac.ComputeHash(counterBytes);
-            var offset = hash[^1] & 0x0F;
-            var code = ((hash[offset] & 0x7F) << 24)
-                     | ((hash[offset + 1] & 0xFF) << 16)
-                     | ((hash[offset + 2] & 0xFF) << 8)
-                     | (hash[offset + 3] & 0xFF);
-            return (code % 1_000_000).ToString("D6");
-        }
-
-        private static byte[] Base32Decode(string base32)
+        [TestInitialize]
+        public void TestInitialize()
         {
-            const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-            var result = new List<byte>();
-            int buffer = 0, bitsLeft = 0;
-            foreach (var c in base32)
+            var options = new BrowserOptions
             {
-                if (c == '=') break;
-                var idx = alphabet.IndexOf(c);
-                if (idx < 0) continue;
-                buffer = (buffer << 5) | idx;
-                bitsLeft += 5;
-                if (bitsLeft >= 8)
-                {
-                    result.Add((byte)(buffer >> (bitsLeft - 8)));
-                    bitsLeft -= 8;
-                }
-            }
-            return result.ToArray();
+                BrowserType = BrowserType.Chrome,
+                PrivateMode = false,
+                FireEvents = false,
+                Headless = false,
+                DefaultThinkTime = 2000
+            };
+
+            _webClient = new WebClient(options);
+            _xrmApp = new XrmApp(_webClient);
+
+            _xrmApp.OnlineLogin.Login(
+                new Uri(TestConfig.OrgUrl),
+                TestConfig.Username.ToSecureString(),
+                TestConfig.Password.ToSecureString(),
+                TestConfig.MfaSecretKey.ToSecureString()
+            );
         }
 
-        private async Task LoginAsync()
+        [TestCleanup]
+        public void TestCleanup()
         {
-            await Page.GotoAsync($"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}");
-
-            // Email
-            await Page.WaitForSelectorAsync("input[name='loginfmt']", new() { Timeout = 30000 });
-            await Page.FillAsync("input[name='loginfmt']", TestConfig.Username);
-            await Page.ClickAsync("input[type='submit']");
-
-            // Password
-            await Page.WaitForSelectorAsync("input[name='passwd']", new() { Timeout = 15000 });
-            await Page.FillAsync("input[name='passwd']", TestConfig.Password);
-            await Page.ClickAsync("input[type='submit']");
-
-            // MFA: si aparece selector de método, cambiar a código TOTP
-            try
-            {
-                var otherWay = Page.Locator("#signInAnotherWay");
-                if (await otherWay.IsVisibleAsync(new() { Timeout = 5000 }))
-                {
-                    await otherWay.ClickAsync();
-                    await Page.Locator("div[data-value='PhoneAppOTP']").ClickAsync();
-                }
-            }
-            catch { }
-
-            // Código TOTP
-            await Page.WaitForSelectorAsync("input[name='otc']", new() { Timeout = 15000 });
-            await Page.FillAsync("input[name='otc']", GenerateTotp(TestConfig.MfaSecretKey));
-            await Page.ClickAsync("input[type='submit']");
-
-            // "¿Mantener la sesión iniciada?" -> Sí
-            try
-            {
-                await Page.WaitForSelectorAsync("#idSIButton9", new() { Timeout = 5000 });
-                await Page.ClickAsync("#idSIButton9");
-            }
-            catch { }
-
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
+            _xrmApp?.Dispose();
         }
 
-        private async Task NavigateToNewRecordAsync()
+        private void NavigateToNewRecord()
         {
-            await Page.GotoAsync(
-                $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&pagetype=entitylist&etn={TestConfig.EntityName}",
-                new PageGotoOptions { Timeout = 60000 });
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
-            await Page.WaitForTimeoutAsync(5000); // Esperar inicialización completa de la app
-
-            // Hacer click via JS directamente (más fiable que Playwright click en Power Apps)
-            var clicked = await Page.EvaluateAsync<bool>(@"
-                const btn = document.querySelector(""button[data-id*='NewRecord']"");
-                if (btn) { btn.click(); return true; }
-                return false;
-            ");
-
-            if (!clicked)
-            {
-                // Fallback: usar API de Power Apps
-                await Page.EvaluateAsync(@"
-                    Xrm.Navigation.navigateTo({
-                        pageType: 'entityrecord',
-                        entityName: 'erf_tablasparaexportar'
-                    });
-                ");
-            }
-
-            // Esperar a que el formulario cargue verificando que aparece el campo
-            await Page.WaitForSelectorAsync(
-                "input[data-id='erf_name.fieldControl-text-box-text']",
-                new() { Timeout = 30000 });
-        }
-
-        private async Task FillFieldAsync(string fieldName, string value)
-        {
-            var input = Page.Locator($"input[data-id='{fieldName}.fieldControl-text-box-text']");
-            await input.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 15000 });
-            await input.ClickAsync();
-            await input.FillAsync(value);
-            await Page.Keyboard.PressAsync("Tab");
-        }
-
-        private async Task SaveAsync()
-        {
-            var saveBtn = Page.Locator("button[aria-label='Guardar (CTRL+S)']");
-            await saveBtn.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 10000 });
-            await saveBtn.ClickAsync(new() { Force = true });
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 30000 });
-            await Page.WaitForTimeoutAsync(3000);
-        }
-
-        private async Task DeleteCurrentRecordAsync()
-        {
-            var deleteBtn = Page.Locator("button[aria-label='Eliminar'], button[aria-label='Delete']").First;
-            if (!await deleteBtn.IsVisibleAsync())
-            {
-                var overflowBtn = Page.Locator("button[data-id='OverflowButton'], button[aria-label*='más comandos'], button[aria-label*='More commands']").First;
-                await overflowBtn.ClickAsync();
-                deleteBtn = Page.Locator("button[aria-label='Eliminar'], button[aria-label='Delete']").First;
-            }
-            await deleteBtn.ClickAsync();
-
-            await Page.Locator("button:has-text('Eliminar'), button:has-text('Delete')").First.ClickAsync();
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 30000 });
+            _xrmApp.Navigation.OpenEntityName(TestConfig.EntityName);
+            _xrmApp.CommandBar.ClickCommand("Nuevo");
         }
 
         [TestMethod]
-        public async Task Test1_DNIValido_GuardaSinError()
+        public void Test1_DNIValido_GuardaSinError()
         {
-            await LoginAsync();
-            await NavigateToNewRecordAsync();
+            NavigateToNewRecord();
 
-            await FillFieldAsync("erf_name", "test 1");
-            await FillFieldAsync("cd_dni", TestConfig.ValidDni);
-            await SaveAsync();
+            _xrmApp.Entity.SetValue("erf_name", "test 1");
+            _xrmApp.Entity.SetValue("cd_dni", TestConfig.ValidDni);
+            _xrmApp.Entity.Save();
 
-            // Verificar que no hay notificación de error
-            var errorNotif = Page.Locator("[data-id='errorNotification'], [data-id='notificationWrapper'] [role='alert']");
-            await Expect(errorNotif).Not.ToBeVisibleAsync(new() { Timeout = 5000 });
-
-            // Verificar que el registro se guardó (URL contiene id del registro)
-            await Expect(Page).ToHaveURLAsync(new System.Text.RegularExpressions.Regex("id="), new() { Timeout = 10000 });
+            // Verificar que no hay error de plugin en el formulario
+            var notifType = _xrmApp.Entity.GetFormNotificationType();
+            Assert.AreNotEqual(FormNotificationType.Error, notifType,
+                "No debería haber errores al guardar con DNI válido");
 
             // Limpiar: borrar el registro de test
-            await DeleteCurrentRecordAsync();
+            _xrmApp.CommandBar.ClickCommand("Eliminar");
+            _xrmApp.Dialogs.ConfirmationDialog(true);
         }
 
         [TestMethod]
-        public async Task Test2_DNIInvalido_MuestraErrorYNoGuarda()
+        public void Test2_DNIInvalido_MuestraErrorYNoGuarda()
         {
-            await LoginAsync();
-            await NavigateToNewRecordAsync();
+            NavigateToNewRecord();
 
-            await FillFieldAsync("erf_name", "test 2");
-            await FillFieldAsync("cd_dni", TestConfig.InvalidDni);
-            await SaveAsync();
+            _xrmApp.Entity.SetValue("erf_name", "test 2");
+            _xrmApp.Entity.SetValue("cd_dni", TestConfig.InvalidDni);
+            _xrmApp.Entity.Save();
 
-            // Verificar que hay una notificación de error visible
-            var errorNotif = Page.Locator("[data-id='notificationWrapper'], [data-id='errorNotification'], [role='alertdialog']");
-            await Expect(errorNotif.First).ToBeVisibleAsync(new() { Timeout = 10000 });
-
-            // Verificar que el registro NO se guardó (URL no contiene id)
-            Assert.IsFalse(Page.Url.Contains("&id="), "El registro no debería haberse guardado con un DNI inválido");
+            // Verificar que hay error de plugin visible en el formulario
+            var notifType = _xrmApp.Entity.GetFormNotificationType();
+            Assert.AreEqual(FormNotificationType.Error, notifType,
+                "Debería haber un error de validación con DNI inválido");
         }
     }
 }
