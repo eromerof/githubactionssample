@@ -28,6 +28,9 @@ jobs:
         run: nuget restore PluginsDataverse.slnx
         working-directory: plugin
 
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
       - name: Build solution
         run: msbuild PluginsDataverse.slnx /p:Configuration=Release /p:Platform="Any CPU"
         working-directory: plugin
