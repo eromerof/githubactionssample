@@ -90,9 +90,14 @@ namespace PluginsDataverse.UITests
 
         private async Task NavigateToNewRecordAsync()
         {
+            // Navegar a la lista de la entidad y pulsar "+ Nuevo"
             await Page.GotoAsync(
-                $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&etn={TestConfig.EntityName}&pagetype=entityrecord",
+                $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&etn={TestConfig.EntityName}&pagetype=entitylist",
                 new PageGotoOptions { Timeout = 60000 });
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
+            await Page.WaitForTimeoutAsync(2000);
+
+            await Page.Locator("button[aria-label='Nuevo'], button:has-text('Nuevo'), button[aria-label='New']").First.ClickAsync();
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
             await Page.WaitForTimeoutAsync(3000);
         }
