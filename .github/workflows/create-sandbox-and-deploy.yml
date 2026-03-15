@@ -23,8 +23,8 @@ jobs:
         uses: microsoft/powerplatform-actions/pack-solution@v1
         with:
           solution-folder: solutions/GithubActionsSolucinpersonalizada
-          solution-file: out/GithubActionsSolucinpersonalizada_managed.zip
-          solution-type: Managed
+          solution-file: out/GithubActionsSolucinpersonalizada.zip
+          solution-type: Both
 
       - name: Import solution
         uses: microsoft/powerplatform-actions/import-solution@v1
