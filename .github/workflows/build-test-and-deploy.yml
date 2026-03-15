@@ -36,7 +36,7 @@ jobs:
         working-directory: plugin
 
       - name: Run unit tests
-        run: dotnet vstest PluginsDataverse.Tests/bin/Release/PluginsDataverse.Tests.dll /logger:console;verbosity=detailed
+        run: dotnet vstest "PluginsDataverse.Tests\bin\Release\PluginsDataverse.Tests.dll" /logger:console;verbosity=detailed
         working-directory: plugin
 
   deploy:
