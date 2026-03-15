@@ -7,11 +7,12 @@ namespace PluginsDataverse.UITests
     [TestClass]
     public class SampleUITest : PageTest
     {
-        public override BrowserTypeLaunchOptions BrowserTypeLaunchOptions => new BrowserTypeLaunchOptions
+        [AssemblyInitialize]
+        public static void AssemblyInit(TestContext context)
         {
-            Headless = false,
-            SlowMo = 500
-        };
+            Environment.SetEnvironmentVariable("HEADED", "1");
+            Environment.SetEnvironmentVariable("PLAYWRIGHT_SLOW_MO", "500");
+        }
 
         /// <summary>
         /// Ejemplo de test de UI con Playwright.
