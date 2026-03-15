@@ -28,8 +28,12 @@ jobs:
         run: nuget restore PluginsDataverse.slnx
         working-directory: plugin
 
+      - name: Build solution
+        run: msbuild PluginsDataverse.slnx /p:Configuration=Release /p:Platform="Any CPU"
+        working-directory: plugin
+
       - name: Run unit tests
-        run: dotnet test PluginsDataverse.Tests/PluginsDataverse.Tests.csproj --configuration Release --verbosity detailed
+        run: dotnet vstest PluginsDataverse.Tests/bin/Release/PluginsDataverse.Tests.dll /logger:console;verbosity=detailed
         working-directory: plugin
 
   deploy:
