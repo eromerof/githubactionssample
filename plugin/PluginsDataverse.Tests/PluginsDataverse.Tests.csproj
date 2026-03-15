@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MSTest.TestAdapter" Version="3.0.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
+    <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.60" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PluginsDataverse\PluginsDataverse.csproj" />
+  </ItemGroup>
+</Project>
