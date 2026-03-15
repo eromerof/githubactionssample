@@ -6,6 +6,7 @@ on:
 jobs:
   export:
     runs-on: windows-latest
+    environment: Power Platform Dev Environment
 
     steps:
       - name: Checkout repo
