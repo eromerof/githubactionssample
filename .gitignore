@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+
+# Visual Studio
+.vs/
+*.user
+
+# Build output
+bin/
+obj/
+
+# NuGet
+packages/
+nuget.exe
+*.nupkg
+
+# Logs
+*.log

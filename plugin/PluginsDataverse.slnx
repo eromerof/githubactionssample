@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="PluginsDataverse.Tests/PluginsDataverse.Tests.csproj" />
   <Project Path="PluginsDataverse/PluginsDataverse.csproj" Id="582c9546-d9a8-428a-b782-822501ede18c" />
+  <Project Path="PluginsDataverse.UITests/PluginsDataverse.UITests.csproj" />
 </Solution>
