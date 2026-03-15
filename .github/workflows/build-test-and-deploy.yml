@@ -3,9 +3,14 @@ name: Build, Test and Deploy Solution
 on:
   workflow_dispatch:
     inputs:
-      environment-url:
-        description: 'URL del entorno (ej: https://miorg.crm4.dynamics.com)'
+      run-deploy:
+        description: '¿Ejecutar el deploy tras los tests?'
         required: true
+        type: boolean
+        default: false
+      environment-url:
+        description: 'URL del entorno (ej: https://miorg.crm4.dynamics.com) - solo si run-deploy = true'
+        required: false
 
 jobs:
   build-and-test:
@@ -19,21 +24,18 @@ jobs:
       - name: Setup NuGet
         uses: nuget/setup-nuget@v2
 
-      - name: Restore NuGet packages
+      - name: Restore NuGet packages (packages.config)
         run: nuget restore PluginsDataverse.slnx
         working-directory: plugin
 
-      - name: Build
-        run: dotnet build --no-restore --configuration Release
-        working-directory: plugin
-
       - name: Run unit tests
-        run: dotnet test PluginsDataverse.Tests/PluginsDataverse.Tests.csproj --configuration Release --verbosity normal
+        run: dotnet test PluginsDataverse.Tests/PluginsDataverse.Tests.csproj --configuration Release --verbosity detailed
         working-directory: plugin
 
   deploy:
     name: Deploy Solution
     needs: build-and-test
+    if: ${{ github.event.inputs.run-deploy == 'true' }}
     runs-on: windows-latest
     environment: Power Platform Dev Environment
 
