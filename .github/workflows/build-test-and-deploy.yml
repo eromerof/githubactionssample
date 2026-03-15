@@ -35,8 +35,13 @@ jobs:
         run: msbuild PluginsDataverse.slnx /p:Configuration=Release /p:Platform="Any CPU"
         working-directory: plugin
 
-      - name: Run unit tests
-        run: dotnet vstest "PluginsDataverse.Tests\bin\Release\PluginsDataverse.Tests.dll" /logger:console;verbosity=detailed
+      - name: Find and run unit tests
+        shell: pwsh
+        run: |
+          $dll = Get-ChildItem -Recurse -Filter "PluginsDataverse.Tests.dll" | Select-Object -First 1
+          if (-not $dll) { Write-Error "No se encontró PluginsDataverse.Tests.dll"; exit 1 }
+          Write-Host "DLL encontrado en: $($dll.FullName)"
+          dotnet vstest "$($dll.FullName)"
         working-directory: plugin
 
   deploy:
