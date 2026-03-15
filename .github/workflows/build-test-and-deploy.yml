@@ -28,7 +28,7 @@ jobs:
         working-directory: plugin
 
       - name: Run unit tests
-        run: dotnet test --no-build --configuration Release --verbosity normal
+        run: dotnet test PluginsDataverse.Tests/PluginsDataverse.Tests.csproj --configuration Release --verbosity normal
         working-directory: plugin
 
   deploy:
