@@ -51,11 +51,7 @@ jobs:
 
       - name: Run unit tests (FakeXrmEasy)
         shell: pwsh
-        run: |
-          $dll = Get-ChildItem -Recurse -Filter "PluginsDataverse.FakeXrmTests.dll" | Select-Object -First 1
-          if (-not $dll) { Write-Error "No se encontró PluginsDataverse.FakeXrmTests.dll"; exit 1 }
-          Write-Host "DLL encontrado en: $($dll.FullName)"
-          dotnet vstest "$($dll.FullName)"
+        run: dotnet test PluginsDataverse.FakeXrmTests/PluginsDataverse.FakeXrmTests.csproj --configuration Release --logger "console;verbosity=normal"
         working-directory: plugin
 
       - name: Create UI test appsettings.json
