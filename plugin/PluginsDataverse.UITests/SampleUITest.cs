@@ -7,6 +7,12 @@ namespace PluginsDataverse.UITests
     [TestClass]
     public class SampleUITest : PageTest
     {
+        public override BrowserTypeLaunchOptions BrowserTypeLaunchOptions => new BrowserTypeLaunchOptions
+        {
+            Headless = false,
+            SlowMo = 500
+        };
+
         /// <summary>
         /// Ejemplo de test de UI con Playwright.
         /// Sustituye la URL y los selectores por los de tu aplicación Power Apps.
