@@ -34,7 +34,9 @@ jobs:
           solution-type: Unmanaged
           overwrite-files: true
 
-      - name: Commit changes to repo
+        
+      - name: Commit and push changes
+        shell: bash
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
