@@ -12,6 +12,7 @@
     <PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
     <PackageReference Include="FakeXrmEasy.Plugins.v9" Version="2.6.0" />
     <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.60" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.2.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PluginsDataverse\PluginsDataverse.csproj" />
