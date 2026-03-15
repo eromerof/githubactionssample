@@ -91,26 +91,8 @@ namespace PluginsDataverse.UITests
         private async Task NavigateToNewRecordAsync()
         {
             await Page.GotoAsync(
-                $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&pagetype=entitylist&etn={TestConfig.EntityName}",
+                $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&pagetype=entityrecord&etn={TestConfig.EntityName}",
                 new PageGotoOptions { Timeout = 60000 });
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
-            await Page.WaitForTimeoutAsync(3000);
-
-            // Traza: capturar screenshot y listar todos los botones disponibles
-            await Page.ScreenshotAsync(new() { Path = "C:\\temp\\debug_list.png" });
-            var allButtons = await Page.Locator("button, [role='button'], [role='menuitem']").AllAsync();
-            foreach (var btn in allButtons)
-            {
-                var text = await btn.TextContentAsync();
-                var ariaLabel = await btn.GetAttributeAsync("aria-label");
-                Console.WriteLine($"BUTTON — text: '{text?.Trim()}' | aria-label: '{ariaLabel}'");
-            }
-
-            // Clic en "+ Nuevo" — buscar por texto visible
-            var newBtn = Page.Locator("button").Filter(new LocatorFilterOptions { HasText = "Nuevo" }).First;
-            await newBtn.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 15000 });
-            await newBtn.ClickAsync();
-
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
             await Page.WaitForTimeoutAsync(3000);
         }
