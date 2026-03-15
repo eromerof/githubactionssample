@@ -7,6 +7,8 @@ jobs:
   export:
     runs-on: windows-latest
     environment: Power Platform Dev Environment
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repo
@@ -45,5 +47,5 @@ jobs:
             echo "No hay cambios que commitear."
           else
             git commit -m "chore: export GithubActionsSolucinpersonalizada from Dev"
-            git push origin main
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main
           fi
