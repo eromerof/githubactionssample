@@ -87,7 +87,7 @@ namespace PluginsDataverse.UITests
             }
             catch { }
 
-            try { await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 }); }
+            try { await Page.WaitForLoadStateAsync(LoadState.Load, new() { Timeout = 60000 }); }
             catch (Exception ex) { throw new Exception($"[Login] NetworkIdle no alcanzado. URL: {Page.Url}", ex); }
         }
 
@@ -98,7 +98,7 @@ namespace PluginsDataverse.UITests
                 await Page.GotoAsync(
                     $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&pagetype=entitylist&etn={TestConfig.EntityName}",
                     new PageGotoOptions { Timeout = 60000 });
-                await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
+                await Page.WaitForLoadStateAsync(LoadState.Load, new() { Timeout = 60000 });
             }
             catch (Exception ex) { throw new Exception($"[Navigate] Navegación a entitylist falló. URL: {Page.Url}", ex); }
 
@@ -159,7 +159,7 @@ namespace PluginsDataverse.UITests
 
             await saveBtn.ClickAsync(new() { Force = true });
 
-            try { await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 30000 }); }
+            try { await Page.WaitForLoadStateAsync(LoadState.Load, new() { Timeout = 30000 }); }
             catch (Exception ex) { throw new Exception($"[Save] NetworkIdle no alcanzado tras guardar. URL: {Page.Url}", ex); }
 
             await Page.WaitForTimeoutAsync(3000);
@@ -176,7 +176,7 @@ namespace PluginsDataverse.UITests
             }
             await deleteBtn.ClickAsync();
             await Page.Locator("button:has-text('Eliminar'), button:has-text('Delete')").First.ClickAsync();
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 30000 });
+            await Page.WaitForLoadStateAsync(LoadState.Load, new() { Timeout = 30000 });
         }
 
         [TestMethod]
