@@ -27,7 +27,7 @@ jobs:
           tenant-id: ${{ vars.PP_TENANT_ID }}
           name: ${{ github.event.inputs.environment-name }}
           type: Sandbox
-          region: ${{ vars.PP_REGION }}
+          region: europe
           currency-name: EUR
           language-code: 3082
           domain: ${{ github.event.inputs.environment-name }}

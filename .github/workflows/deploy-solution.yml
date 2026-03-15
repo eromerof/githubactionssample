@@ -1,0 +1,126 @@
+name: Deploy Solution
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Entorno destino'
+        required: true
+        type: choice
+        options:
+          - new-sandbox
+          - uat
+          - production
+      sandbox-name:
+        description: 'Nombre del sandbox (solo si target = new-sandbox)'
+        required: false
+        default: 'Sandbox-Deploy'
+
+# ─── Job 1: Nuevo sandbox aislado ────────────────────────────────────────────
+jobs:
+  deploy-sandbox:
+    name: Deploy to New Sandbox
+    if: ${{ github.event.inputs.target == 'new-sandbox' }}
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Power Platform Tools
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
+      - name: Create sandbox environment
+        uses: microsoft/powerplatform-actions/create-environment@v1
+        with:
+          app-id: ${{ secrets.PP_APP_ID }}
+          client-secret: ${{ secrets.PP_CLIENT_SECRET }}
+          tenant-id: ${{ vars.PP_TENANT_ID }}
+          name: ${{ github.event.inputs.sandbox-name }}
+          type: Sandbox
+          region: ${{ vars.PP_REGION }}
+          currency-name: EUR
+          language-code: 3082
+          domain: ${{ github.event.inputs.sandbox-name }}
+
+      - name: Pack solution (Managed)
+        uses: microsoft/powerplatform-actions/pack-solution@v1
+        with:
+          solution-folder: solutions/GithubActionsSolucinpersonalizada
+          solution-file: out/GithubActionsSolucinpersonalizada_managed.zip
+          solution-type: Managed
+
+      - name: Import solution to sandbox
+        uses: microsoft/powerplatform-actions/import-solution@v1
+        with:
+          environment-url: https://${{ github.event.inputs.sandbox-name }}.crm4.dynamics.com
+          app-id: ${{ secrets.PP_APP_ID }}
+          client-secret: ${{ secrets.PP_CLIENT_SECRET }}
+          tenant-id: ${{ vars.PP_TENANT_ID }}
+          solution-file: out/GithubActionsSolucinpersonalizada_managed.zip
+          force-overwrite: true
+          publish-changes: true
+
+# ─── Job 2: UAT ───────────────────────────────────────────────────────────────
+  deploy-uat:
+    name: Deploy to UAT
+    if: ${{ github.event.inputs.target == 'uat' }}
+    runs-on: windows-latest
+    environment: Power Platform UAT Environment
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Power Platform Tools
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
+      - name: Pack solution (Managed)
+        uses: microsoft/powerplatform-actions/pack-solution@v1
+        with:
+          solution-folder: solutions/GithubActionsSolucinpersonalizada
+          solution-file: out/GithubActionsSolucinpersonalizada_managed.zip
+          solution-type: Managed
+
+      - name: Import solution to UAT
+        uses: microsoft/powerplatform-actions/import-solution@v1
+        with:
+          environment-url: ${{ secrets.PP_UAT_ENV_URL }}
+          app-id: ${{ secrets.PP_APP_ID }}
+          client-secret: ${{ secrets.PP_CLIENT_SECRET }}
+          tenant-id: ${{ vars.PP_TENANT_ID }}
+          solution-file: out/GithubActionsSolucinpersonalizada_managed.zip
+          force-overwrite: true
+          publish-changes: true
+
+# ─── Job 3: Producción ────────────────────────────────────────────────────────
+  deploy-production:
+    name: Deploy to Production
+    if: ${{ github.event.inputs.target == 'production' }}
+    runs-on: windows-latest
+    environment: Power Platform Production Environment
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Power Platform Tools
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
+      - name: Pack solution (Managed)
+        uses: microsoft/powerplatform-actions/pack-solution@v1
+        with:
+          solution-folder: solutions/GithubActionsSolucinpersonalizada
+          solution-file: out/GithubActionsSolucinpersonalizada_managed.zip
+          solution-type: Managed
+
+      - name: Import solution to Production
+        uses: microsoft/powerplatform-actions/import-solution@v1
+        with:
+          environment-url: ${{ secrets.PP_PROD_ENV_URL }}
+          app-id: ${{ secrets.PP_APP_ID }}
+          client-secret: ${{ secrets.PP_CLIENT_SECRET }}
+          tenant-id: ${{ vars.PP_TENANT_ID }}
+          solution-file: out/GithubActionsSolucinpersonalizada_managed.zip
+          force-overwrite: true
+          publish-changes: true
