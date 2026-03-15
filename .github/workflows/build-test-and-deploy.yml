@@ -3,6 +3,11 @@ name: Build, Test and Deploy Solution
 on:
   workflow_dispatch:
     inputs:
+      run-ui-tests:
+        description: '¿Ejecutar los UI tests contra Dataverse?'
+        required: true
+        type: boolean
+        default: false
       run-deploy:
         description: '¿Ejecutar el deploy tras los tests?'
         required: true
@@ -40,6 +45,40 @@ jobs:
         run: |
           $dll = Get-ChildItem -Recurse -Filter "PluginsDataverse.Tests.dll" | Select-Object -First 1
           if (-not $dll) { Write-Error "No se encontró PluginsDataverse.Tests.dll"; exit 1 }
+          Write-Host "DLL encontrado en: $($dll.FullName)"
+          dotnet vstest "$($dll.FullName)"
+        working-directory: plugin
+
+      - name: Create UI test appsettings.json
+        if: github.event.inputs.run-ui-tests == 'true'
+        shell: pwsh
+        env:
+          APPSETTINGS: ${{ secrets.DATAVERSE_APPSETTINGS_JSON }}
+        run: |
+          $outDir = "PluginsDataverse.UITests\bin\Release\net8.0"
+          New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+          $env:APPSETTINGS | Set-Content "$outDir\appsettings.json" -Encoding UTF8
+          Write-Host "appsettings.json generado en $outDir"
+        working-directory: plugin
+
+      - name: Install Playwright browsers
+        if: github.event.inputs.run-ui-tests == 'true'
+        shell: pwsh
+        run: |
+          $ps1 = "PluginsDataverse.UITests\bin\Release\net8.0\playwright.ps1"
+          if (Test-Path $ps1) {
+            & pwsh $ps1 install chromium
+          } else {
+            Write-Error "No se encontró playwright.ps1 en $ps1"
+          }
+        working-directory: plugin
+
+      - name: Run UI tests
+        if: github.event.inputs.run-ui-tests == 'true'
+        shell: pwsh
+        run: |
+          $dll = Get-ChildItem -Recurse -Filter "PluginsDataverse.UITests.dll" | Select-Object -First 1
+          if (-not $dll) { Write-Error "No se encontró PluginsDataverse.UITests.dll"; exit 1 }
           Write-Host "DLL encontrado en: $($dll.FullName)"
           dotnet vstest "$($dll.FullName)"
         working-directory: plugin

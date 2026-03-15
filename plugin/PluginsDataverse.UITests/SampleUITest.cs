@@ -9,8 +9,12 @@ namespace PluginsDataverse.UITests
         [AssemblyInitialize]
         public static void AssemblyInit(TestContext context)
         {
-            Environment.SetEnvironmentVariable("HEADED", "1");
-            Environment.SetEnvironmentVariable("PLAYWRIGHT_SLOW_MO", "500");
+            // En CI (GitHub Actions establece CI=true), ejecutar en modo headless
+            if (Environment.GetEnvironmentVariable("CI") == null)
+            {
+                Environment.SetEnvironmentVariable("HEADED", "1");
+                Environment.SetEnvironmentVariable("PLAYWRIGHT_SLOW_MO", "500");
+            }
         }
     }
 }
