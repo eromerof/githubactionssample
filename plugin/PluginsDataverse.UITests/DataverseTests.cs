@@ -1,6 +1,7 @@
 using Microsoft.Dynamics365.UIAutomation.Api.UCI;
 using Microsoft.Dynamics365.UIAutomation.Browser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium;
 
 namespace PluginsDataverse.UITests
 {
@@ -41,8 +42,18 @@ namespace PluginsDataverse.UITests
 
         private void NavigateToNewRecord()
         {
-            _xrmApp.Navigation.OpenEntityName(TestConfig.EntityName);
+            Driver.Navigate().GoToUrl(
+                $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&pagetype=entitylist&etn={TestConfig.EntityName}");
             _xrmApp.CommandBar.ClickCommand("Nuevo");
+        }
+
+        private IWebDriver Driver => _webClient.Browser.Driver;
+
+        private bool HasErrorNotification()
+        {
+            var elements = Driver.FindElements(By.CssSelector(
+                "[data-id='notificationWrapper'], [data-id='errorNotification'], [role='alertdialog']"));
+            return elements.Any(e => e.Displayed);
         }
 
         [TestMethod]
@@ -54,9 +65,12 @@ namespace PluginsDataverse.UITests
             _xrmApp.Entity.SetValue("cd_dni", TestConfig.ValidDni);
             _xrmApp.Entity.Save();
 
-            // Verificar que no hay error de plugin en el formulario
-            var notifType = _xrmApp.Entity.GetFormNotificationType();
-            Assert.AreNotEqual(FormNotificationType.Error, notifType,
+            // Verificar que el registro se guardó (URL contiene id del registro)
+            Assert.IsTrue(Driver.Url.Contains("&id="),
+                "El registro debería haberse guardado correctamente con DNI válido");
+
+            // Verificar que no hay error de plugin
+            Assert.IsFalse(HasErrorNotification(),
                 "No debería haber errores al guardar con DNI válido");
 
             // Limpiar: borrar el registro de test
@@ -73,10 +87,13 @@ namespace PluginsDataverse.UITests
             _xrmApp.Entity.SetValue("cd_dni", TestConfig.InvalidDni);
             _xrmApp.Entity.Save();
 
-            // Verificar que hay error de plugin visible en el formulario
-            var notifType = _xrmApp.Entity.GetFormNotificationType();
-            Assert.AreEqual(FormNotificationType.Error, notifType,
+            // Verificar que hay error de plugin visible
+            Assert.IsTrue(HasErrorNotification(),
                 "Debería haber un error de validación con DNI inválido");
+
+            // Verificar que el registro NO se guardó (URL no contiene id)
+            Assert.IsFalse(Driver.Url.Contains("&id="),
+                "El registro no debería haberse guardado con DNI inválido");
         }
     }
 }
