@@ -9,15 +9,15 @@
     <Version>1.0.0.0</Version>
     <Managed>2</Managed>
     <Publisher>
-      <UniqueName>Enrique</UniqueName>
+      <UniqueName>eromerof</UniqueName>
       <LocalizedNames>
-        <LocalizedName description="eromerof" languagecode="3082" />
+        <LocalizedName description="Enrique Romero Fernández" languagecode="3082" />
       </LocalizedNames>
       <Descriptions />
       <EMailAddress xsi:nil="true"></EMailAddress>
       <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
-      <CustomizationPrefix>erf</CustomizationPrefix>
-      <CustomizationOptionValuePrefix>78921</CustomizationOptionValuePrefix>
+      <CustomizationPrefix>cd</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>12145</CustomizationOptionValuePrefix>
       <Addresses>
         <Address>
           <AddressNumber>1</AddressNumber>
@@ -79,7 +79,6 @@
     </Publisher>
     <RootComponents>
       <RootComponent type="1" schemaName="erf_tablasparaexportar" behavior="0" />
-      <RootComponent type="29" id="{d41b148b-5220-f111-8342-000d3a67519a}" behavior="0" />
       <RootComponent type="29" id="{e06881ae-5220-f111-8342-000d3a67519a}" behavior="0" />
       <RootComponent type="62" schemaName="erf_GithubActions" behavior="0" />
       <RootComponent type="80" schemaName="erf_GithubActions" behavior="0" />

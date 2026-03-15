@@ -13,16 +13,6 @@
   <AppModuleSiteMaps />
   <AppModules />
   <EntityDataProviders />
-  <connectionreferences>
-    <connectionreference connectionreferencelogicalname="copilots_header_5d9c7.shared_commondataserviceforapps.shared-commondataser-c36d35e0-5ae7-404f-95cd-e89d73f2e090">
-      <connectionreferencedisplayname>copilots_header_5d9c7.shared_commondataserviceforapps.shared-commondataser-c36d35e0-5ae7-404f-95cd-e89d73f2e090</connectionreferencedisplayname>
-      <connectorid>/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps</connectorid>
-      <iscustomizable>0</iscustomizable>
-      <promptingbehavior>0</promptingbehavior>
-      <statecode>0</statecode>
-      <statuscode>1</statuscode>
-    </connectionreference>
-  </connectionreferences>
   <Languages>
     <Language>3082</Language>
   </Languages>
