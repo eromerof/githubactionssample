@@ -16,8 +16,11 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore PluginsDataverse.slnx
         working-directory: plugin
 
       - name: Build
