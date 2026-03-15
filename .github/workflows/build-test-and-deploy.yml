@@ -40,11 +40,20 @@ jobs:
         run: msbuild PluginsDataverse.slnx /p:Configuration=Release /p:Platform="Any CPU"
         working-directory: plugin
 
-      - name: Find and run unit tests
+      - name: Run unit tests (MSTest)
         shell: pwsh
         run: |
           $dll = Get-ChildItem -Recurse -Filter "PluginsDataverse.Tests.dll" | Select-Object -First 1
           if (-not $dll) { Write-Error "No se encontró PluginsDataverse.Tests.dll"; exit 1 }
+          Write-Host "DLL encontrado en: $($dll.FullName)"
+          dotnet vstest "$($dll.FullName)"
+        working-directory: plugin
+
+      - name: Run unit tests (FakeXrmEasy)
+        shell: pwsh
+        run: |
+          $dll = Get-ChildItem -Recurse -Filter "PluginsDataverse.FakeXrmTests.dll" | Select-Object -First 1
+          if (-not $dll) { Write-Error "No se encontró PluginsDataverse.FakeXrmTests.dll"; exit 1 }
           Write-Host "DLL encontrado en: $($dll.FullName)"
           dotnet vstest "$($dll.FullName)"
         working-directory: plugin
@@ -55,6 +64,10 @@ jobs:
         env:
           APPSETTINGS: ${{ secrets.DATAVERSE_APPSETTINGS_JSON }}
         run: |
+          if ([string]::IsNullOrWhiteSpace($env:APPSETTINGS)) {
+            Write-Error "El secret DATAVERSE_APPSETTINGS_JSON no está configurado. Ve a Settings > Secrets and variables > Actions y crea el secret."
+            exit 1
+          }
           $outDir = "PluginsDataverse.UITests\bin\Release\net8.0"
           New-Item -ItemType Directory -Force -Path $outDir | Out-Null
           $env:APPSETTINGS | Set-Content "$outDir\appsettings.json" -Encoding UTF8
