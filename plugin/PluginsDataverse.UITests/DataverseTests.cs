@@ -90,21 +90,10 @@ namespace PluginsDataverse.UITests
 
         private async Task NavigateToNewRecordAsync()
         {
-            // Navegar a la lista de la entidad y pulsar "+ Nuevo"
+            // Navegar directamente al formulario de nuevo registro
             await Page.GotoAsync(
-                $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&etn={TestConfig.EntityName}&pagetype=entitylist",
+                $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&pagetype=entityrecord&etn={TestConfig.EntityName}",
                 new PageGotoOptions { Timeout = 60000 });
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
-            await Page.WaitForTimeoutAsync(3000);
-
-            // Buscar el botón Nuevo por varias estrategias
-            var newBtn = Page.GetByRole(AriaRole.Button, new() { Name = "Nuevo" })
-                             .Or(Page.GetByRole(AriaRole.Button, new() { Name = "New" }))
-                             .Or(Page.Locator("[data-id*='new'], [id*='new_button']"))
-                             .First;
-
-            await newBtn.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 15000 });
-            await newBtn.ClickAsync();
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
             await Page.WaitForTimeoutAsync(3000);
         }
