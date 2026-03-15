@@ -37,6 +37,11 @@ jobs:
           overwrite-files: true
 
         
+      - name: Set solution type to Both in Solution.xml
+        shell: bash
+        run: |
+          sed -i 's/<Managed>0<\/Managed>/<Managed>2<\/Managed>/' solutions/GithubActionsSolucinpersonalizada/Other/Solution.xml
+
       - name: Commit and push changes
         shell: bash
         run: |
