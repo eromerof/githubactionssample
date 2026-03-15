@@ -92,10 +92,6 @@
         <Dependent type="80" schemaName="erf_GithubActions" displayName="Github Actions" />
       </MissingDependency>
       <MissingDependency>
-        <Required type="connectionreference" displayName="copilots_header_5d9c7.shared_commondataserviceforapps.shared-commondataser-c36d35e0-5ae7-404f-95cd-e89d73f2e090" solution="Active" id.connectionreferencelogicalname="copilots_header_5d9c7.shared_commondataserviceforapps.shared-commondataser-c36d35e0-5ae7-404f-95cd-e89d73f2e090" />
-        <Dependent type="29" displayName="Flujo para exportar" id="{d41b148b-5220-f111-8342-000d3a67519a}" />
-      </MissingDependency>
-      <MissingDependency>
         <Required type="SettingDefinition" displayName="AppChannel" solution="msdyn_AppFrameworkInfraExtensions (1.0.0.15)" id.uniquename="AppChannel">
           <package appName="PowerAppsAppFramework Package" version="1.0.0.25">PowerAppsAppFramework_Anchor (1.0.0.25)</package>
         </Required>
