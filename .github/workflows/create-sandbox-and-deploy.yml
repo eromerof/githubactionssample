@@ -1,15 +1,14 @@
-name: Create Sandbox and Deploy Solution
+name: Deploy Solution to Environment
 
 on:
   workflow_dispatch:
     inputs:
-      environment-name:
-        description: 'Nombre del entorno sandbox a crear'
+      environment-url:
+        description: 'URL del entorno (ej: https://miorg.crm4.dynamics.com)'
         required: true
-        default: 'Sandbox-Deploy'
 
 jobs:
-  create-and-deploy:
+  deploy:
     runs-on: windows-latest
     environment: Power Platform Dev Environment
 
@@ -20,19 +19,6 @@ jobs:
       - name: Install Power Platform Tools
         uses: microsoft/powerplatform-actions/actions-install@v1
 
-      - name: Create sandbox environment
-        uses: microsoft/powerplatform-actions/create-environment@v1
-        with:
-          app-id: ${{ secrets.PP_APP_ID }}
-          client-secret: ${{ secrets.PP_CLIENT_SECRET }}
-          tenant-id: ${{ vars.PP_TENANT_ID }}
-          name: ${{ github.event.inputs.environment-name }}
-          type: Sandbox
-          region: europe
-          currency: EUR
-          language: 3082
-          domain: ${{ github.event.inputs.environment-name }}
-
       - name: Pack solution
         uses: microsoft/powerplatform-actions/pack-solution@v1
         with:
@@ -40,10 +26,10 @@ jobs:
           solution-file: out/GithubActionsSolucinpersonalizada_managed.zip
           solution-type: Managed
 
-      - name: Import solution to sandbox
+      - name: Import solution
         uses: microsoft/powerplatform-actions/import-solution@v1
         with:
-          environment-url: https://${{ github.event.inputs.environment-name }}.crm4.dynamics.com
+          environment-url: ${{ github.event.inputs.environment-url }}
           app-id: ${{ secrets.PP_APP_ID }}
           client-secret: ${{ secrets.PP_CLIENT_SECRET }}
           tenant-id: ${{ vars.PP_TENANT_ID }}
