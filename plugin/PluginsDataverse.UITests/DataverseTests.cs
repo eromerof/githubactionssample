@@ -106,7 +106,8 @@ namespace PluginsDataverse.UITests
 
         private async Task FillFieldAsync(string fieldName, string value)
         {
-            var input = Page.Locator($"input[data-id*='{fieldName}']").First;
+            var input = Page.Locator($"input[data-id='{fieldName}.fieldControl-text-box-text']");
+            await input.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 15000 });
             await input.ClickAsync();
             await input.FillAsync(value);
             await Page.Keyboard.PressAsync("Tab");
@@ -114,7 +115,9 @@ namespace PluginsDataverse.UITests
 
         private async Task SaveAsync()
         {
-            await Page.Keyboard.PressAsync("Control+S");
+            var saveBtn = Page.Locator("button[aria-label='Guardar (CTRL+S)']");
+            await saveBtn.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 10000 });
+            await saveBtn.ClickAsync(new() { Force = true });
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 30000 });
             await Page.WaitForTimeoutAsync(3000);
         }
