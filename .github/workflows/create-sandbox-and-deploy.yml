@@ -28,8 +28,8 @@ jobs:
           name: ${{ github.event.inputs.environment-name }}
           type: Sandbox
           region: europe
-          currency-name: EUR
-          language-code: 3082
+          currency: EUR
+          language: 3082
           domain: ${{ github.event.inputs.environment-name }}
 
       - name: Pack solution
