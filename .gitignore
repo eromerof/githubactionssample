@@ -16,3 +16,6 @@ nuget.exe
 
 # Logs
 *.log
+
+# Configuración sensible (credenciales)
+appsettings.json

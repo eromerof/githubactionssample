@@ -8,15 +8,6 @@ namespace PluginsDataverse.UITests
     [TestClass]
     public class DataverseTests : PageTest
     {
-        private const string OrgUrl = "https://eromerof-cursos.crm4.dynamics.com";
-        private const string AppId = "73c10fc1-5220-f111-8342-000d3a67519a";
-        private const string EntityName = "erf_tablasparaexportar";
-        private const string Username = "hello@enriqueromero.es";
-        private const string Password = "tikcuw-dudcic-xAcji3";
-        private const string MfaSecretKey = "XGLQYJSD6XDLR57W";
-        private const string ValidDni = "12345678Z";
-        private const string InvalidDni = "12345678A";
-
         private static string GenerateTotp(string base32Secret)
         {
             var secret = Base32Decode(base32Secret.ToUpper());
@@ -57,16 +48,16 @@ namespace PluginsDataverse.UITests
 
         private async Task LoginAsync()
         {
-            await Page.GotoAsync($"{OrgUrl}/main.aspx?appid={AppId}");
+            await Page.GotoAsync($"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}");
 
             // Email
             await Page.WaitForSelectorAsync("input[name='loginfmt']", new() { Timeout = 30000 });
-            await Page.FillAsync("input[name='loginfmt']", Username);
+            await Page.FillAsync("input[name='loginfmt']", TestConfig.Username);
             await Page.ClickAsync("input[type='submit']");
 
             // Password
             await Page.WaitForSelectorAsync("input[name='passwd']", new() { Timeout = 15000 });
-            await Page.FillAsync("input[name='passwd']", Password);
+            await Page.FillAsync("input[name='passwd']", TestConfig.Password);
             await Page.ClickAsync("input[type='submit']");
 
             // MFA: si aparece selector de método, cambiar a código TOTP
@@ -81,9 +72,9 @@ namespace PluginsDataverse.UITests
             }
             catch { }
 
-            // Código TOTP generado sin dependencias externas
+            // Código TOTP
             await Page.WaitForSelectorAsync("input[name='otc']", new() { Timeout = 15000 });
-            await Page.FillAsync("input[name='otc']", GenerateTotp(MfaSecretKey));
+            await Page.FillAsync("input[name='otc']", GenerateTotp(TestConfig.MfaSecretKey));
             await Page.ClickAsync("input[type='submit']");
 
             // "¿Mantener la sesión iniciada?" -> Sí
@@ -100,7 +91,7 @@ namespace PluginsDataverse.UITests
         private async Task NavigateToNewRecordAsync()
         {
             await Page.GotoAsync(
-                $"{OrgUrl}/main.aspx?appid={AppId}&etn={EntityName}&pagetype=entityrecord",
+                $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&etn={TestConfig.EntityName}&pagetype=entityrecord",
                 new PageGotoOptions { Timeout = 60000 });
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
             await Page.WaitForTimeoutAsync(3000);
@@ -143,7 +134,7 @@ namespace PluginsDataverse.UITests
             await NavigateToNewRecordAsync();
 
             await FillFieldAsync("erf_name", "test 1");
-            await FillFieldAsync("cd_dni", ValidDni);
+            await FillFieldAsync("cd_dni", TestConfig.ValidDni);
             await SaveAsync();
 
             // Verificar que no hay notificación de error
@@ -164,7 +155,7 @@ namespace PluginsDataverse.UITests
             await NavigateToNewRecordAsync();
 
             await FillFieldAsync("erf_name", "test 2");
-            await FillFieldAsync("cd_dni", InvalidDni);
+            await FillFieldAsync("cd_dni", TestConfig.InvalidDni);
             await SaveAsync();
 
             // Verificar que hay una notificación de error visible
