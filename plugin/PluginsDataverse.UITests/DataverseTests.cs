@@ -207,8 +207,15 @@ namespace PluginsDataverse.UITests
             await FillFieldAsync("cd_dni", TestConfig.InvalidDni);
             await SaveAsync();
 
-            var errorNotif = Page.Locator("[data-id='notificationWrapper'], [data-id='errorNotification'], [role='alertdialog']");
-            await Expect(errorNotif.First).ToBeVisibleAsync(new() { Timeout = 10000 });
+            // El plugin lanza un diálogo "Error de proceso empresarial"
+            var errorDialog = Page.Locator("[role='dialog'], [role='alertdialog']")
+                .Filter(new LocatorFilterOptions { HasText = "Error de proceso empresarial" });
+
+            try { await Expect(errorDialog).ToBeVisibleAsync(new() { Timeout = 10000 }); }
+            catch (Exception ex) { throw new Exception($"[Test2] Diálogo de error del plugin no apareció. URL: {Page.Url}", ex); }
+
+            // Cerrar el diálogo
+            await Page.Locator("button:has-text('Aceptar')").ClickAsync();
 
             Assert.IsFalse(Page.Url.Contains("&id="), "El registro no debería haberse guardado con DNI inválido");
         }
