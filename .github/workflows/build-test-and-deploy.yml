@@ -19,19 +19,19 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.x'
+          dotnet-version: '4.8.x'
 
       - name: Restore dependencies
         run: dotnet restore
-        # working-directory: plugin/  # descomentar cuando se añada el proyecto
+        working-directory: plugin
 
       - name: Build
         run: dotnet build --no-restore --configuration Release
-        # working-directory: plugin/  # descomentar cuando se añada el proyecto
+        working-directory: plugin
 
       - name: Run unit tests
         run: dotnet test --no-build --configuration Release --verbosity normal
-        # working-directory: plugin/  # descomentar cuando se añada el proyecto
+        working-directory: plugin
 
   deploy:
     name: Deploy Solution
