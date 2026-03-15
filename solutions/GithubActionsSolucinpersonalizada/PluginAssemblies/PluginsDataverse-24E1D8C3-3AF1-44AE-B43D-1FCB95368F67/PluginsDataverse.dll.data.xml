@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PluginAssembly FullName="PluginsDataverse, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7ce3a052f2ce5f87" PluginAssemblyId="24e1d8c3-3af1-44ae-b43d-1fcb95368f67" CustomizationLevel="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsolationMode>2</IsolationMode>
+  <SourceType>0</SourceType>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <FileName>/PluginAssemblies/PluginsDataverse-24E1D8C3-3AF1-44AE-B43D-1FCB95368F67/PluginsDataverse.dll</FileName>
+  <PluginTypes>
+    <PluginType AssemblyQualifiedName="PluginsDataverse.DniValidationPlugin, PluginsDataverse, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7ce3a052f2ce5f87" PluginTypeId="6e68b24b-7c5a-419e-b29a-6d01be84c1aa" Name="PluginsDataverse.DniValidationPlugin">
+      <FriendlyName>ccf9b416-cad7-4b33-b1aa-46ffca102c4b</FriendlyName>
+    </PluginType>
+  </PluginTypes>
+</PluginAssembly>

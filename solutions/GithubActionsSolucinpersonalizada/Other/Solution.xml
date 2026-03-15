@@ -82,6 +82,8 @@
       <RootComponent type="29" id="{e06881ae-5220-f111-8342-000d3a67519a}" behavior="0" />
       <RootComponent type="62" schemaName="erf_GithubActions" behavior="0" />
       <RootComponent type="80" schemaName="erf_GithubActions" behavior="0" />
+      <RootComponent type="91" id="{24e1d8c3-3af1-44ae-b43d-1fcb95368f67}" schemaName="PluginsDataverse, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7ce3a052f2ce5f87" behavior="0" />
+      <RootComponent type="92" id="{475c747d-7920-f111-8342-000d3a67519a}" behavior="0" />
     </RootComponents>
     <MissingDependencies>
       <MissingDependency>
