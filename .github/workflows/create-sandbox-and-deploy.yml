@@ -11,6 +11,7 @@ on:
 jobs:
   create-and-deploy:
     runs-on: windows-latest
+    environment: Power Platform Dev Environment
 
     steps:
       - name: Checkout repo
