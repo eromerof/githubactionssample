@@ -1,24 +1,11 @@
-name: Export Solutions from Dev
+name: Export Solution from Dev
 
 on:
   workflow_dispatch:
-    inputs:
-      solution_name:
-        description: 'Solución a exportar'
-        required: true
-        type: choice
-        options:
-          - NorayCRMCore
-          - NorayCRMCaptacion
-          - NorayCRMFidelizacion
-          - ALL
 
 jobs:
   export:
     runs-on: windows-latest
-    env:
-      SOLUTION_EXPORTED_FOLDER: out/exported/
-      SOLUTION_FOLDER: out/solutions/
 
     steps:
       - name: Checkout repo
@@ -27,82 +14,33 @@ jobs:
       - name: Install Power Platform Tools
         uses: microsoft/powerplatform-actions/actions-install@v1
 
-      # ---- CORE ----
-      - name: Export NorayCRMCore (unmanaged)
-        if: ${{ github.event.inputs.solution_name == 'NorayCRMCore' || github.event.inputs.solution_name == 'ALL' }}
+      - name: Export solution (unmanaged)
         uses: microsoft/powerplatform-actions/export-solution@v1
         with:
           environment-url: ${{ secrets.PP_DEV_ENV_URL }}
           app-id: ${{ secrets.PP_APP_ID }}
           client-secret: ${{ secrets.PP_CLIENT_SECRET }}
-          tenant-id: ${{ secrets.PP_TENANT_ID }}
-          solution-name: NorayCRMCore
-          solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER }}NorayCRMCore.zip
+          tenant-id: ${{ vars.PP_TENANT_ID }}
+          solution-name: GithubActionsSolucinpersonalizada
+          solution-output-file: out/GithubActionsSolucinpersonalizada.zip
           managed: false
 
-      - name: Unpack NorayCRMCore
-        if: ${{ github.event.inputs.solution_name == 'NorayCRMCore' || github.event.inputs.solution_name == 'ALL' }}
+      - name: Unpack solution
         uses: microsoft/powerplatform-actions/unpack-solution@v1
         with:
-          solution-file: ${{ env.SOLUTION_EXPORTED_FOLDER }}NorayCRMCore.zip
-          solution-folder: solutions/NorayCRMCore
+          solution-file: out/GithubActionsSolucinpersonalizada.zip
+          solution-folder: solutions/GithubActionsSolucinpersonalizada
           solution-type: Unmanaged
           overwrite-files: true
 
-      # ---- CAPTACION ----
-      - name: Export NorayCRMCaptacion (unmanaged)
-        if: ${{ github.event.inputs.solution_name == 'NorayCRMCaptacion' || github.event.inputs.solution_name == 'ALL' }}
-        uses: microsoft/powerplatform-actions/export-solution@v1
-        with:
-          environment-url: ${{ secrets.PP_DEV_ENV_URL }}
-          app-id: ${{ secrets.PP_APP_ID }}
-          client-secret: ${{ secrets.PP_CLIENT_SECRET }}
-          tenant-id: ${{ secrets.PP_TENANT_ID }}
-          solution-name: NorayCRMCaptacion
-          solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER }}NorayCRMCaptacion.zip
-          managed: false
-
-      - name: Unpack NorayCRMCaptacion
-        if: ${{ github.event.inputs.solution_name == 'NorayCRMCaptacion' || github.event.inputs.solution_name == 'ALL' }}
-        uses: microsoft/powerplatform-actions/unpack-solution@v1
-        with:
-          solution-file: ${{ env.SOLUTION_EXPORTED_FOLDER }}NorayCRMCaptacion.zip
-          solution-folder: solutions/NorayCRMCaptacion
-          solution-type: Unmanaged
-          overwrite-files: true
-
-      # ---- FIDELIZACION ----
-      - name: Export NorayCRMFidelizacion (unmanaged)
-        if: ${{ github.event.inputs.solution_name == 'NorayCRMFidelizacion' || github.event.inputs.solution_name == 'ALL' }}
-        uses: microsoft/powerplatform-actions/export-solution@v1
-        with:
-          environment-url: ${{ secrets.PP_DEV_ENV_URL }}
-          app-id: ${{ secrets.PP_APP_ID }}
-          client-secret: ${{ secrets.PP_CLIENT_SECRET }}
-          tenant-id: ${{ secrets.PP_TENANT_ID }}
-          solution-name: NorayCRMFidelizacion
-          solution-output-file: ${{ env.SOLUTION_EXPORTED_FOLDER }}NorayCRMFidelizacion.zip
-          managed: false
-
-      - name: Unpack NorayCRMFidelizacion
-        if: ${{ github.event.inputs.solution_name == 'NorayCRMFidelizacion' || github.event.inputs.solution_name == 'ALL' }}
-        uses: microsoft/powerplatform-actions/unpack-solution@v1
-        with:
-          solution-file: ${{ env.SOLUTION_EXPORTED_FOLDER }}NorayCRMFidelizacion.zip
-          solution-folder: solutions/NorayCRMFidelizacion
-          solution-type: Unmanaged
-          overwrite-files: true
-
-      # ---- COMMIT CHANGES ----
-      - name: Commit solution changes to repo
+      - name: Commit changes to repo
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           git add solutions/
-          git status
           if git diff --staged --quiet; then
             echo "No hay cambios que commitear."
           else
-            git commit -m "chore: export solutions from Dev [${{ github.event.inputs.solution_name }}]"
+            git commit -m "chore: export GithubActionsSolucinpersonalizada from Dev"
             git push origin main
           fi
