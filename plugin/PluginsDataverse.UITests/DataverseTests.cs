@@ -90,9 +90,24 @@ namespace PluginsDataverse.UITests
 
         private async Task NavigateToNewRecordAsync()
         {
+            // Primero cargar la app para tener el contexto Xrm disponible
             await Page.GotoAsync(
-                $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&pagetype=entityrecord&etn={TestConfig.EntityName}",
+                $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&pagetype=entitylist&etn={TestConfig.EntityName}",
                 new PageGotoOptions { Timeout = 60000 });
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
+
+            // Esperar a que el objeto Xrm esté disponible en la página
+            await Page.WaitForFunctionAsync("typeof Xrm !== 'undefined' && typeof Xrm.Navigation !== 'undefined'",
+                null, new() { Timeout = 30000 });
+
+            // Navegar al formulario nuevo usando la API oficial de Power Apps
+            await Page.EvaluateAsync(@"
+                Xrm.Navigation.navigateTo({
+                    pageType: 'entityrecord',
+                    entityName: 'erf_tablasparaexportar'
+                });
+            ");
+
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
             await Page.WaitForTimeoutAsync(3000);
         }
