@@ -95,9 +95,16 @@ namespace PluginsDataverse.UITests
                 $"{TestConfig.OrgUrl}/main.aspx?appid={TestConfig.AppId}&etn={TestConfig.EntityName}&pagetype=entitylist",
                 new PageGotoOptions { Timeout = 60000 });
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
-            await Page.WaitForTimeoutAsync(2000);
+            await Page.WaitForTimeoutAsync(3000);
 
-            await Page.Locator("button[aria-label='Nuevo'], button:has-text('Nuevo'), button[aria-label='New']").First.ClickAsync();
+            // Buscar el botón Nuevo por varias estrategias
+            var newBtn = Page.GetByRole(AriaRole.Button, new() { Name = "Nuevo" })
+                             .Or(Page.GetByRole(AriaRole.Button, new() { Name = "New" }))
+                             .Or(Page.Locator("[data-id*='new'], [id*='new_button']"))
+                             .First;
+
+            await newBtn.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = 15000 });
+            await newBtn.ClickAsync();
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 60000 });
             await Page.WaitForTimeoutAsync(3000);
         }
