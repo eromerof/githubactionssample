@@ -107,7 +107,7 @@ namespace PluginsDataverse.UITests
             {
                 await Page.WaitForFunctionAsync(
                     "() => typeof Xrm !== 'undefined' && typeof Xrm.Navigation !== 'undefined'",
-                    new() { Timeout = 30000 });
+                    options: new PageWaitForFunctionOptions { Timeout = 30000 });
             }
             catch (Exception ex) { throw new Exception($"[Navigate] Xrm.Navigation no disponible tras 30s. URL: {Page.Url}", ex); }
 
