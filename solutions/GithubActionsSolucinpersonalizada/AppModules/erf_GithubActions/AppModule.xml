@@ -23,6 +23,22 @@
   <Descriptions>
     <Description description="Facilita la gestión de procesos relacionados con Github Actions en un entorno centralizado. Actualmente, esta aplicación se encuentra en fase inicial de desarrollo." languagecode="3082" />
   </Descriptions>
+  <appelements>
+    <appelement uniquename="cd_erf_GithubActions_canvasappid_cd_custompageconfirmacin_c9245">
+      <canvasappid>
+        <name>cd_custompageconfirmacin_c9245</name>
+      </canvasappid>
+      <iscustomizable>1</iscustomizable>
+      <name>cd_erf_GithubActions_canvasappid_cd_custompageconfirmacin_c9245</name>
+    </appelement>
+    <appelement uniquename="cd_erf_GithubActions_canvasappid_cd_githubactionsdefaultcommandlibrary_8a4ed">
+      <canvasappid>
+        <name>cd_githubactionsdefaultcommandlibrary_8a4ed</name>
+      </canvasappid>
+      <iscustomizable>1</iscustomizable>
+      <name>cd_erf_GithubActions_canvasappid_cd_githubactionsdefaultcommandlibrary_8a4ed</name>
+    </appelement>
+  </appelements>
   <appsettings>
     <appsetting settingdefinitionid.uniquename="AppChannel">
       <iscustomizable>1</iscustomizable>

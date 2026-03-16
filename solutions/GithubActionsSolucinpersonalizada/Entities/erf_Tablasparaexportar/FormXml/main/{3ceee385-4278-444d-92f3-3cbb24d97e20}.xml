@@ -95,6 +95,17 @@
       <DisplayConditions Order="0" FallbackForm="true">
         <Everyone />
       </DisplayConditions>
+      <formLibraries>
+        <Library name="cd_/scripts/tablaexportar_form.js" libraryUniqueId="{6c0f5756-d960-4983-8c2d-09cf6c70b097}" />
+        <Library name="cd_/script/common.js" libraryUniqueId="{ca6647f4-62bd-4e89-8b68-aa884a50fdd5}" />
+      </formLibraries>
+      <events>
+        <event name="onload" application="false" active="false">
+          <Handlers>
+            <Handler functionName="FormTablaExportar.Events.OnLoad" libraryName="cd_/scripts/tablaexportar_form.js" handlerUniqueId="{2cf55967-150a-4d60-9cd6-46d8a75afac1}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+      </events>
     </form>
     <IsCustomizable>1</IsCustomizable>
     <CanBeDeleted>1</CanBeDeleted>

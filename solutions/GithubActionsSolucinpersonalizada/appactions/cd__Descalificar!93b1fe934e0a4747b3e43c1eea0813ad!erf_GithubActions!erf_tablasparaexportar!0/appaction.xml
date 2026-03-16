@@ -1,0 +1,32 @@
+<appaction uniquename="cd__Descalificar!93b1fe934e0a4747b3e43c1eea0813ad!erf_GithubActions!erf_tablasparaexportar!0">
+  <appmoduleid>
+    <uniquename>erf_GithubActions</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="Descalificar">
+    <label description="Descalificar" languagecode="3082" />
+  </buttonlabeltext>
+  <context>1</context>
+  <contextentity>
+    <logicalname>erf_tablasparaexportar</logicalname>
+  </contextentity>
+  <contextvalue>erf_tablasparaexportar</contextvalue>
+  <fonticon>$clientsvg:CallDisqualify</fonticon>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>Descalificar!93b1fe934e0a4747b3e43c1eea0813ad</name>
+  <onclickeventjavascriptfunctionname>FormTablaExportar.Functions.ShowDialog</onclickeventjavascriptfunctionname>
+  <onclickeventjavascriptparameters>[]</onclickeventjavascriptparameters>
+  <onclickeventjavascriptwebresourceid>
+    <webresourceid>7d484c96-5521-f111-8342-000d3a67519a</webresourceid>
+  </onclickeventjavascriptwebresourceid>
+  <onclickeventtype>2</onclickeventtype>
+  <origin>0</origin>
+  <sequence>100100015.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>0</type>
+  <visibilitytype>0</visibilitytype>
+</appaction>

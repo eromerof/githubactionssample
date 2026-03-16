@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{7d484c96-5521-f111-8342-000d3a67519a}</WebResourceId>
+  <Name>cd_/scripts/tablaexportar_form.js</Name>
+  <DisplayName>/scripts/tablaexportar_form.js</DisplayName>
+  <WebResourceType>3</WebResourceType>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsEnabledForMobileClient>0</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>0</IsAvailableForMobileOffline>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/cd_scriptstablaexportar_formjs7D484C96-5521-F111-8342-000D3A67519A</FileName>
+</WebResource>

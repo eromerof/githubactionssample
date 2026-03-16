@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ImportExportXml version="9.2.26023.169" SolutionPackageVersion="9.2" languagecode="3082" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26023.169" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.26023.00169">
+<ImportExportXml version="9.2.26023.169" SolutionPackageVersion="9.2" languagecode="3082" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26023.169" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.26023.00173">
   <SolutionManifest>
     <UniqueName>GithubActionsSolucinpersonalizada</UniqueName>
     <LocalizedNames>
@@ -80,6 +80,10 @@
     <RootComponents>
       <RootComponent type="1" schemaName="erf_tablasparaexportar" behavior="0" />
       <RootComponent type="29" id="{e06881ae-5220-f111-8342-000d3a67519a}" behavior="0" />
+      <RootComponent type="300" schemaName="cd_custompageconfirmacin_c9245" behavior="0" />
+      <RootComponent type="300" schemaName="cd_githubactionsdefaultcommandlibrary_8a4ed" behavior="0" />
+      <RootComponent type="61" schemaName="cd_/script/common.js" behavior="0" />
+      <RootComponent type="61" schemaName="cd_/scripts/tablaexportar_form.js" behavior="0" />
       <RootComponent type="62" schemaName="erf_GithubActions" behavior="0" />
       <RootComponent type="80" schemaName="erf_GithubActions" behavior="0" />
       <RootComponent type="91" id="{24e1d8c3-3af1-44ae-b43d-1fcb95368f67}" schemaName="PluginsDataverse, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7ce3a052f2ce5f87" behavior="0" />
