@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<DVDT>
+  <WebResources>
+    <Resource Id="7d484c96-5521-f111-8342-000d3a67519a" dvDisplayName="/scripts/tablaexportar_form.js" dvFilePath="cd_/scripts/tablaexportar_form.js" localFileName="TablaExportar_form.js" localFilePath="//Javascript/TablaExportar_form.js"></Resource>
+    <Resource Id="7baa1286-5521-f111-8342-000d3a67519a" dvDisplayName="/script/common.js" dvFilePath="cd_/script/common.js" localFileName="Common.js" localFilePath="//Javascript/Common.js"></Resource>
+  </WebResources>
+  <Settings></Settings>
+</DVDT>
