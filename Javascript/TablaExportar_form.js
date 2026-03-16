@@ -14,6 +14,7 @@ FormTablaExportar.Events =
     OnLoad: function (executionContext) {
         "use strict";
         formContext = executionContext.getFormContext();
+        Common.FormContext.Init(executionContext);
        
 
 
